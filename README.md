@@ -28,18 +28,15 @@ Este proyecto automatiza el proceso de enviar un correo diario con las 3 tareas 
    ```bash
    git clone https://github.com/tuusuario/n8n-tareas-diarias.git
    cd n8n-tareas-diarias
-Abre tu n8n local en el navegador
+2. Abre tu n8n local en el navegador
 
-Crea tus credenciales de Google (OAuth2)
+3. Crea tus credenciales de Google (OAuth2)
 
-Importa el archivo JSON desde:
+4. Importa el archivo JSON desde:
+    workflow/agendador-diario-tareas.json
+  
+5. Conecta tus credenciales manualmente
 
-bash
-Copy
-Edit
-workflow/agendador-diario-tareas.json
-Conecta tus credenciales manualmente
+6. Ajusta el horario desde el nodo Schedule Trigger
 
-Ajusta el horario desde el nodo Schedule Trigger
-
-Haz clic en Activate para que se ejecute automáticamente
+7. Haz clic en Activate para que se ejecute automáticamente
