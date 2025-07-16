@@ -33,6 +33,7 @@ Este proyecto automatiza el proceso de enviar un correo diario con las 3 tareas 
 3. Crea tus credenciales de Google (OAuth2)
 
 4. Importa el archivo JSON desde:
+    ```bash
     workflow/agendador-diario-tareas.json
   
 5. Conecta tus credenciales manualmente
