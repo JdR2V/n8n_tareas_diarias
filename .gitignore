@@ -1,0 +1,6 @@
+# Ignora archivos y carpetas sensibles/locales
+.n8n/
+.n8n_data/
+.env
+*.env.local
+*log

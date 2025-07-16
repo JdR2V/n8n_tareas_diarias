@@ -1,0 +1,165 @@
+{
+  "name": "Agendador diario de tareas",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 20
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "05f1b3ad-05c3-4732-a313-e71b3ea6f6e2",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "ID_DE_TU_SPREADSHEET",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Tareas",
+          "cachedResultUrl": "LA_URL_DE_TU_DOCUMENTO_DE_GOOGLE_SHEETS"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        208,
+        0
+      ],
+      "id": "bb2bd4dc-9606-4e4d-a61e-9f567d9c1aa3",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "__REDACTED__",
+          "name": "Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const prioridades = { 'Alta': 1, 'Media': 2, 'Baja': 3 };\n\n// Filtramos y ordenamos\nconst tareas = items\n  .filter(item => item.json.Estado?.toLowerCase() === 'pendiente')\n  .sort((a, b) => {\n    const aP = prioridades[a.json.Prioridad] || 4;\n    const bP = prioridades[b.json.Prioridad] || 4;\n    return aP - bP;\n  })\n  .slice(0, 3); // Solo las 3 más importantes\n\nreturn tareas;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "a98d4d96-7d56-4401-b475-c305faf806e5",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "sendTo": "TU_EMAI_@TU_CLIENTE",
+        "subject": "Tareas del dia",
+        "emailType": "text",
+        "message": "={{ $json.texto }}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        528,
+        224
+      ],
+      "id": "d7df39b3-b04d-4eaa-b891-6b193ec4e32d",
+      "name": "Send a message",
+      "webhookId": "2e1686b6-d0f6-44c6-a456-e5a36820e87e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "__REDACTED__",
+          "name": "Gmail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const tareas = items.map(item => `• ${item.json.Tarea} (${item.json.Prioridad})`);\n\nreturn [\n  {\n    json: {\n      texto: `Hola Yo,\n\nTienes ${tareas.length} tareas importantes para hoy:\\n\\n${tareas.join('\\n')}\\n\\n¡Éxitos con tus tareas! 🚀`\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "fc9153bf-9db0-4e35-9ce8-1e304d78b135",
+      "name": "Code1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "77puzotaWCzqP6Lo"
+  },
+  "versionId": "3b17267d-d4af-440c-a053-a41056b32193",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "74ffab165129657dbdd112d81969a7be195efbe899f30b3ccaa24e6eebe594d4"
+  },
+  "id": "77puzotaWCzqP6Lo",
+  "tags": []
+}
